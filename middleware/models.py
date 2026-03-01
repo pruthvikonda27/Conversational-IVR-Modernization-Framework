@@ -1,6 +1,6 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
-class CallInput(BaseModel):
-    call_id: str = Field(..., example="CALL123")
-    input: str = Field(..., example="1")
-    input_type: str = Field(..., example="dtmf")
+class IVRRequest(BaseModel):
+    call_id: str
+    input: str
+    input_type: str  # speech or dtmf
