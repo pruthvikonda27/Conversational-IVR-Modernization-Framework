@@ -1,0 +1,1569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>IRCTC Conversational IVR — Milestone 3 (Modern UI)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+
+<style>
+/* ─────────────────────────────────────────────
+   DESIGN TOKENS – SOFT NEUMORPHIC CONSOLE UI
+   ───────────────────────────────────────────── */
+:root {
+  --primary: #3b82f6;
+  --primary-soft: #dbeafe;
+  --accent: #6366f1;
+  --danger: #b91c1c;
+  --success: #16a34a;
+  --border-subtle: #e5e7eb;
+  --bg-page: #eaf3ff;
+  --bg-elevated: #ffffff;
+  --bg-muted: #f5f8ff;
+  --t-strong: #0f172a;
+  --t-muted: #64748b;
+  --t-soft: #94a3b8;
+  --radius-card: 14px;
+  --shadow-soft: 0 16px 32px rgba(37, 99, 235, 0.08);
+  --shadow-sm: 0 8px 16px rgba(15, 23, 42, 0.07);
+
+  --f-base: 'DM Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --f-mono: 'Space Mono', ui-monospace, SFMono-Regular, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--f-base);
+  background: #e9f2ff;
+  color: var(--t-strong);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  padding: 20px;
+}
+
+.app-shell {
+  width: 100%;
+  max-width: 980px;
+  background: rgba(255,255,255,0.98);
+  border-radius: 18px;
+  box-shadow: var(--shadow-soft);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid #dbeafe;
+  gap: 0;
+}
+
+/* ── HEADER ───────────────────────────────── */
+header {
+  order: 0;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 22px;
+  border-bottom: 1px solid #e2e8f0;
+  background: linear-gradient(180deg, #f8fbff, #f1f6ff);
+}
+
+.hlogo {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 0%, #60a5fa 0, #2563eb 55%, #1d4ed8 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  box-shadow: 0 6px 14px rgba(37, 99, 235, 0.25);
+}
+
+.htitle h1 {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #020617;
+}
+
+.htitle p {
+  margin-top: 2px;
+  font-size: 11px;
+  color: var(--t-muted);
+}
+
+.hright {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pill {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 10px;
+  border: 1px solid transparent;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: 500;
+}
+
+.pill-m3 {
+  background: #eef2ff;
+  border-color: #c7d2fe;
+  color: #3730a3;
+}
+
+.pill-live {
+  background: #ecfdf3;
+  border-color: #bbf7d0;
+  color: #15803d;
+}
+
+.pill-live::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 0 6px rgba(34, 197, 94, 0.25);
+  animation: ping 1.4s infinite;
+}
+
+@keyframes ping {
+  0% { transform: scale(0.9); opacity: 0.9; }
+  80%, 100% { transform: scale(1.3); opacity: 0; }
+}
+
+.lp {
+  order: 2;
+  border-top: 1px solid #e2e8f0;
+  background: var(--bg-elevated);
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 8px;
+}
+
+.phead {
+  padding: 14px 16px 10px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.25);
+}
+
+.phead h2 {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: #0f172a;
+}
+
+.phead p {
+  margin-top: 3px;
+  font-size: 10px;
+  color: var(--t-muted);
+}
+
+.mtabs {
+  display: inline-flex;
+  margin: 10px 14px;
+  padding: 3px;
+  background: #f1f5ff;
+  border-radius: 999px;
+  border: 1px solid #c7d2fe;
+}
+
+.mtab {
+  border: none;
+  background: transparent;
+  padding: 6px 12px;
+  font-size: 11px;
+  font-weight: 500;
+  border-radius: 999px;
+  cursor: pointer;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.2s, color 0.2s, transform 0.1s;
+}
+
+.mtab.on {
+  background: #1d4ed8;
+  color: white;
+  box-shadow: 0 6px 14px rgba(37, 99, 235, 0.35);
+  transform: translateY(-1px);
+}
+
+.lpbody {
+  flex: 1;
+  padding: 10px 14px 14px;
+  overflow-y: auto;
+}
+
+.lpbody::-webkit-scrollbar {
+  width: 4px;
+}
+.lpbody::-webkit-scrollbar-thumb {
+  background: #cbd5f5;
+  border-radius: 999px;
+}
+
+.sec-label {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--t-soft);
+  margin-bottom: 8px;
+}
+
+.qbtn {
+  width: 100%;
+  border: none;
+  background: white;
+  border-radius: 12px;
+  padding: 9px 10px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  box-shadow: none;
+  border: 1px solid #e2e8f0;
+  transition: transform 0.1s ease, box-shadow 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+  text-align: left;
+}
+
+.qbtn:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+  border-color: #bfdbfe;
+  background: #f9fbff;
+}
+
+.qbtn:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.12);
+}
+
+.qi {
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  background: #eff6ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+}
+
+.ql {
+  flex: 1;
+  font-size: 13px;
+  color: #111827;
+}
+
+.qk {
+  font-family: var(--f-mono);
+  font-size: 9px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: #f9fafb;
+  color: var(--t-soft);
+  border: 1px dashed #e5e7eb;
+}
+
+/* DTMF keypad */
+.kgrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.kbtn {
+  aspect-ratio: 1 / 1;
+  max-width: 140px;
+  max-height: 110px;
+  margin-inline: auto;
+  border-radius: 14px;
+  border: 1px solid #d1d5db;
+  background: radial-gradient(circle at 30% 0%, #e5edff 0, #ffffff 55%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.15s ease, border-color 0.15s ease, background 0.15s;
+}
+
+.kbtn:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+  border-color: #93c5fd;
+}
+
+.kbtn:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.16);
+}
+
+.kn {
+  font-size: 22px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.ka {
+  font-size: 9px;
+  font-family: var(--f-mono);
+  color: var(--t-soft);
+  margin-top: 2px;
+}
+
+/* ── CHAT COLUMN ──────────────────────────── */
+.ch {
+  order: 1;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+}
+
+.chead {
+  padding: 14px 18px;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cavatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 14px;
+  background: conic-gradient(from 160deg, #4f46e5, #06b6d4, #22c55e, #4f46e5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 18px;
+}
+
+.cstatus h3 {
+  font-size: 15px;
+  font-weight: 600;
+  color: #020617;
+}
+
+.cstatus p {
+  font-size: 11px;
+  color: var(--t-muted);
+}
+
+.cctrl {
+  margin-left: auto;
+  display: flex;
+  gap: 6px;
+}
+
+.ctrlbtn {
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid #d1d5db;
+  background: white;
+  color: var(--t-muted);
+  cursor: pointer;
+  font-family: var(--f-mono);
+  font-size: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.15s, color 0.15s, box-shadow 0.15s, border-color 0.15s, transform 0.1s;
+}
+
+.ctrlbtn:hover {
+  background: #eff6ff;
+  color: #1d4ed8;
+  border-color: #bfdbfe;
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.16);
+  transform: translateY(-1px);
+}
+
+.ctrlbtn.red:hover {
+  background: #fef2f2;
+  color: #b91c1c;
+  border-color: #fecaca;
+  box-shadow: 0 4px 10px rgba(248, 113, 113, 0.26);
+}
+
+.msgs {
+  flex: 1;
+  padding: 14px 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  scroll-behavior: smooth;
+}
+
+.msgs::-webkit-scrollbar {
+  width: 6px;
+}
+.msgs::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 999px;
+}
+
+.mrow {
+  display: flex;
+  gap: 10px;
+  animation: fadeInUp 0.22s ease-out;
+}
+
+.mrow.user {
+  flex-direction: row-reverse;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.mavatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+}
+
+.mavatar.bot {
+  background: #e0ecff;
+}
+
+.mavatar.usr {
+  background: #fee2e2;
+}
+
+.mcontent {
+  max-width: 92%;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mrow.user .mcontent {
+  align-items: flex-end;
+}
+
+.mbubble {
+  padding: 10px 14px;
+  border-radius: 18px;
+  font-size: 13px;
+  line-height: 1.6;
+  white-space: pre-line;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  color: #020617;
+}
+
+.mrow.user .mbubble {
+  background: linear-gradient(135deg, #0f766e, #14b8a6);
+  color: #ecfeff;
+  border-radius: 22px 22px 6px 22px;
+  border-color: transparent;
+  box-shadow: 0 8px 18px rgba(37, 99, 235, 0.45);
+}
+
+.mrow.bot .mbubble {
+  background: #f9fafb;
+  border: 1px solid #e2e8f0;
+}
+
+.mbubble b {
+  color: #1d4ed8;
+}
+
+.imeta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.itag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-family: var(--f-mono);
+  font-size: 9px;
+  background: #ecfeff;
+  border: 1px solid #a5f3fc;
+  color: #0e7490;
+}
+
+.cbar {
+  width: 82px;
+  height: 3px;
+  border-radius: 999px;
+  background: #e5e7eb;
+  overflow: hidden;
+}
+
+.cfill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+
+.opts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding-top: 1px;
+}
+
+.ochip {
+  padding: 5px 11px;
+  border-radius: 999px;
+  border: 1px solid #d1d5db;
+  background: #f9fafb;
+  font-size: 11.5px;
+  cursor: pointer;
+  color: #111827;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: background 0.15s, transform 0.1s, box-shadow 0.15s, border-color 0.15s;
+}
+
+.ochip::before {
+  content: '↻';
+  font-size: 10px;
+  color: #9ca3af;
+}
+
+.ochip:hover {
+  background: white;
+  border-color: #bfdbfe;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.18);
+  transform: translateY(-1px);
+}
+
+.typing {
+  display: none;
+  padding: 0 20px 8px;
+}
+
+.typing.show {
+  display: flex;
+  gap: 8px;
+}
+
+.tdots {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  padding: 9px 14px;
+  background: white;
+  border-radius: 16px 16px 16px 6px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #cbd5f5;
+  animation: bounce-dots 1.2s infinite;
+}
+
+.dot:nth-child(2){ animation-delay: .15s; }
+.dot:nth-child(3){ animation-delay: .3s; }
+
+@keyframes bounce-dots {
+  0%, 80%, 100% { transform: translateY(0); opacity: 0.7; }
+  40% { transform: translateY(-4px); opacity: 1; background: #60a5fa; }
+}
+
+/* Input area */
+.inputarea {
+  padding: 10px 18px 12px;
+  border-top: 1px solid #e2e8f0;
+  background: #f8fbff;
+}
+
+.ttsrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  font-size: 11px;
+  color: var(--t-muted);
+  font-family: var(--f-mono);
+}
+
+.tog {
+  width: 34px;
+  height: 19px;
+  border-radius: 999px;
+  background: #e5e7eb;
+  border: 1px solid #cbd5f5;
+  cursor: pointer;
+  position: relative;
+  flex-shrink: 0;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.tog::after {
+  content: '';
+  width: 15px;
+  height: 15px;
+  border-radius: 999px;
+  background: white;
+  box-shadow: 0 2px 4px rgba(15, 23, 42, 0.2);
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  transition: transform 0.2s ease;
+}
+
+.tog.on {
+  background: #22c55e;
+  border-color: #16a34a;
+}
+
+.tog.on::after {
+  transform: translateX(13px);
+}
+
+.irow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: white;
+  border-radius: 12px;
+  padding: 4px 4px 4px 12px;
+  border: 1px solid #d1d5db;
+  box-shadow: none;
+  transition: border-color 0.15s, box-shadow 0.15s, transform 0.1s;
+}
+
+.irow:focus-within {
+  border-color: #1d4ed8;
+  box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.55), 0 12px 26px rgba(37, 99, 235, 0.3);
+  transform: translateY(-1px);
+}
+
+#inp {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 13.5px;
+  color: #020617;
+}
+
+#inp::placeholder {
+  color: var(--t-soft);
+}
+
+.micbtn,
+.sndbtn {
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  transition: background 0.15s, color 0.15s, transform 0.1s, box-shadow 0.15s;
+}
+
+.micbtn {
+  background: #f9fafb;
+  color: #6b7280;
+}
+
+.micbtn:hover {
+  background: #eef2ff;
+  color: #1d4ed8;
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
+  transform: translateY(-1px);
+}
+
+.micbtn.on {
+  background: #fee2e2;
+  color: #b91c1c;
+  box-shadow: 0 0 0 1px rgba(248, 113, 113, 0.7);
+  animation: mic-pulse 1.2s infinite;
+}
+
+@keyframes mic-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(248, 113, 113, 0.5); }
+  50% { box-shadow: 0 0 0 10px rgba(248, 113, 113, 0.03); }
+}
+
+.sndbtn {
+  background: linear-gradient(135deg, #2563eb, #4f46e5);
+  color: white;
+  box-shadow: 0 10px 22px rgba(37, 99, 235, 0.45);
+}
+
+.sndbtn:hover {
+  transform: translateY(-1px) scale(1.02);
+  box-shadow: 0 16px 32px rgba(37, 99, 235, 0.55);
+}
+
+.sndbtn:active {
+  transform: translateY(0) scale(0.98);
+  box-shadow: 0 8px 18px rgba(37, 99, 235, 0.45);
+}
+
+.vstatus {
+  margin-top: 5px;
+  min-height: 18px;
+  font-size: 11px;
+  color: #b91c1c;
+  font-family: var(--f-mono);
+}
+
+.nomicnote {
+  display: none;
+  margin-top: 6px;
+  padding: 7px 10px;
+  background: #fef3c7;
+  border-radius: 10px;
+  border: 1px dashed #f59e0b;
+  font-size: 11px;
+  color: #92400e;
+  font-family: var(--f-mono);
+}
+
+/* ── DEBUG PANEL ──────────────────────────── */
+.dp {
+  display: none;
+}
+
+.dbody {
+  flex: 1;
+  padding: 10px 14px 14px;
+  overflow-y: auto;
+  font-family: var(--f-mono);
+}
+
+.dbody::-webkit-scrollbar {
+  width: 4px;
+}
+.dbody::-webkit-scrollbar-thumb {
+  background: #cbd5f5;
+  border-radius: 999px;
+}
+
+.dsec {
+  margin-bottom: 14px;
+}
+
+.dlabel {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--t-soft);
+  margin-bottom: 5px;
+}
+
+.dval {
+  font-size: 11px;
+  color: #1d4ed8;
+  background: #eef2ff;
+  border: 1px solid #c7d2fe;
+  border-radius: 10px;
+  padding: 6px 8px;
+  word-break: break-all;
+}
+
+.dval.intent {
+  color: #b45309;
+  background: #fffbeb;
+  border-color: #fed7aa;
+}
+
+.dval.entity {
+  color: #047857;
+  background: #ecfdf3;
+  border-color: #bbf7d0;
+}
+
+.dval.state {
+  color: #7c2d12;
+  background: #fef3c7;
+  border-color: #fed7aa;
+}
+
+.cmeter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cmbar {
+  flex: 1;
+  height: 5px;
+  border-radius: 999px;
+  background: #e5e7eb;
+  overflow: hidden;
+}
+
+.cmfill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #22c55e, #4ade80);
+  transition: width 0.4s ease;
+}
+
+.cmpct {
+  font-size: 10px;
+  color: #16a34a;
+  min-width: 32px;
+  text-align: right;
+}
+
+.epill {
+  display: inline-block;
+  padding: 2px 7px;
+  background: #ecfdf3;
+  border-radius: 999px;
+  border: 1px solid #bbf7d0;
+  font-size: 9.5px;
+  color: #047857;
+  margin: 1px 2px 0 0;
+}
+
+.lentry {
+  font-size: 10px;
+  padding: 3px 0;
+  border-bottom: 1px dashed #e5e7eb;
+  color: var(--t-soft);
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.ltime {
+  color: #93c5fd;
+  flex-shrink: 0;
+}
+
+.lintent {
+  color: #f97316;
+}
+
+/* Global scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5f5 transparent;
+}
+
+/* Responsive layout */
+@media (min-width: 1040px) {
+  .lp { margin-top: 0; }
+}
+
+@media (max-width: 900px) {
+  body {
+    padding: 10px;
+  }
+  .app-shell {
+    border-radius: 18px;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.25);
+  }
+  .lp {
+    border-radius: 16px;
+    margin-inline: 10px;
+    margin-bottom: 8px;
+  }
+  .msgs {
+    padding-inline: 14px;
+  }
+  .chead {
+    padding-inline: 14px;
+  }
+  .inputarea { padding-inline: 14px; }
+}
+</style>
+</head>
+<body>
+
+<div class="app-shell">
+
+  <!-- HEADER -->
+  <header>
+    <div class="hlogo">🚄</div>
+    <div class="htitle">
+      <h1>IRCTC IVR SIMULATOR</h1>
+      <p>Milestone 3 · Conversational AI · Web Speech API · Frontend Only</p>
+    </div>
+    <div class="hright">
+      <span class="pill pill-m3">Milestone 3</span>
+      <span class="pill pill-live">Frontend Runtime</span>
+    </div>
+  </header>
+
+  <!-- LEFT PANEL -->
+  <aside class="lp">
+    <div class="phead">
+      <h2>Interaction Modes</h2>
+      <p>Use natural language or keypad-style DTMF</p>
+    </div>
+    <div class="mtabs">
+      <button class="mtab on" id="tabConv" onclick="setMode('conv')">💬 Conversation</button>
+      <button class="mtab" id="tabDTMF" onclick="setMode('dtmf')">🔢 DTMF Pad</button>
+    </div>
+    <div class="lpbody">
+
+      <!-- CONVERSATIONAL -->
+      <div id="convPanel">
+        <div class="sec-label" style="margin-top:4px">Quick actions</div>
+        <button class="qbtn" onclick="q('I want to book a train ticket')"><span class="qi">🎫</span><span class="ql">Book ticket</span><span class="qk">1</span></button>
+        <button class="qbtn" onclick="q('Check my PNR status')"><span class="qi">📋</span><span class="ql">PNR status</span><span class="qk">2</span></button>
+        <button class="qbtn" onclick="q('Show train schedule')"><span class="qi">🕐</span><span class="ql">Train schedule</span><span class="qk">3</span></button>
+        <button class="qbtn" onclick="q('I want to cancel my ticket')"><span class="qi">❌</span><span class="ql">Cancel ticket</span><span class="qk">4</span></button>
+        <button class="qbtn" onclick="q('What is the ticket fare?')"><span class="qi">💰</span><span class="ql">Fare enquiry</span><span class="qk">5</span></button>
+        <button class="qbtn" onclick="q('Running status of my train')"><span class="qi">📍</span><span class="ql">Running status</span><span class="qk">6</span></button>
+        <button class="qbtn" onclick="q('I have a complaint')"><span class="qi">🙋</span><span class="ql">Complaint</span><span class="qk">8</span></button>
+        <button class="qbtn" onclick="q('Thank you bye')"><span class="qi">👋</span><span class="ql">End session</span><span class="qk">9</span></button>
+      </div>
+
+      <!-- DTMF -->
+      <div id="dtmfPanel" style="display:none">
+        <div class="sec-label" style="margin-top:4px">Keypad</div>
+        <div class="kgrid">
+          <button class="kbtn" onclick="dtmf('1')"><span class="kn">1</span><span class="ka">BOOK</span></button>
+          <button class="kbtn" onclick="dtmf('2')"><span class="kn">2</span><span class="ka">PNR</span></button>
+          <button class="kbtn" onclick="dtmf('3')"><span class="kn">3</span><span class="ka">SCHED</span></button>
+          <button class="kbtn" onclick="dtmf('4')"><span class="kn">4</span><span class="ka">CANCEL</span></button>
+          <button class="kbtn" onclick="dtmf('5')"><span class="kn">5</span><span class="ka">FARE</span></button>
+          <button class="kbtn" onclick="dtmf('6')"><span class="kn">6</span><span class="ka">STATUS</span></button>
+          <button class="kbtn" onclick="dtmf('7')"><span class="kn">7</span><span class="ka">PQRS</span></button>
+          <button class="kbtn" onclick="dtmf('8')"><span class="kn">8</span><span class="ka">COMPLNT</span></button>
+          <button class="kbtn" onclick="dtmf('9')"><span class="kn">9</span><span class="ka">EXIT</span></button>
+          <button class="kbtn" onclick="dtmf('*')"><span class="kn" style="font-size:28px">✱</span></button>
+          <button class="kbtn" onclick="dtmf('0')"><span class="kn">0</span></button>
+          <button class="kbtn" onclick="dtmf('#')"><span class="kn">#</span></button>
+        </div>
+        <p style="font-size:10px;color:var(--t-soft);text-align:center;margin-top:10px;font-family:var(--f-mono)">Press keys to navigate IVR</p>
+      </div>
+
+    </div>
+  </aside>
+
+  <!-- CHAT -->
+  <main class="ch">
+    <div class="chead">
+      <div class="cavatar">🤖</div>
+      <div class="cstatus">
+        <h3>IRCTC AI Agent</h3>
+        <p id="statusTxt">Ready · Frontend-only simulator</p>
+      </div>
+      <div class="cctrl">
+        <button class="ctrlbtn" onclick="exportChat()">⬇ Export</button>
+        <button class="ctrlbtn red" onclick="resetChat()">↺ Reset session</button>
+      </div>
+    </div>
+
+    <div class="msgs" id="msgs"></div>
+
+    <div class="typing" id="typing">
+      <div class="mavatar bot">🤖</div>
+      <div class="tdots">
+        <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      </div>
+    </div>
+
+    <div class="inputarea">
+      <div class="ttsrow">
+        <div class="tog" id="ttstog" onclick="toggleTTS()"></div>
+        <span id="ttslbl">TTS: Off</span>
+        <span style="margin-left:auto;font-size:9.5px;color:var(--t-soft)">Ctrl+M = mic · Enter = send</span>
+      </div>
+      <div class="irow">
+        <input
+          type="text"
+          id="inp"
+          placeholder='Try: "Book ticket from Delhi to Mumbai 15 April sleeper"'
+          onkeydown="if(e=event,e.key==='Enter')send()"
+        />
+        <button class="micbtn" id="micbtn" onclick="toggleMic()" title="Ctrl+M">🎤</button>
+        <button class="sndbtn" onclick="send()">➤</button>
+      </div>
+      <div class="vstatus" id="vstatus"></div>
+      <div class="nomicnote" id="nomicnote">⚠ Web Speech API works best in Chrome or Edge. Use text input if microphone is unavailable.</div>
+    </div>
+  </main>
+
+  <!-- DEBUG PANEL -->
+  <aside class="dp">
+    <div class="phead">
+      <h2>Debug state</h2>
+      <p>Intent & entity inspection</p>
+    </div>
+    <div class="dbody">
+      <div class="dsec">
+        <div class="dlabel">Session ID</div>
+        <div class="dval" id="dSess">—</div>
+      </div>
+      <div class="dsec">
+        <div class="dlabel">Current state</div>
+        <div class="dval state" id="dState">welcome</div>
+      </div>
+      <div class="dsec">
+        <div class="dlabel">Last intent</div>
+        <div class="dval intent" id="dIntent">—</div>
+      </div>
+      <div class="dsec">
+        <div class="dlabel">Confidence</div>
+        <div class="cmeter">
+          <div class="cmbar"><div class="cmfill" id="dConfFill" style="width:0%"></div></div>
+          <div class="cmpct" id="dConfPct">0%</div>
+        </div>
+      </div>
+      <div class="dsec">
+        <div class="dlabel">Entities (turn)</div>
+        <div class="dval entity" id="dEnts">None</div>
+      </div>
+      <div class="dsec">
+        <div class="dlabel">Entities (session)</div>
+        <div class="dval entity" id="dSessEnts">None</div>
+      </div>
+      <div class="dsec">
+        <div class="dlabel">Turn log</div>
+        <div id="dLog" style="font-size:10px;"></div>
+      </div>
+    </div>
+  </aside>
+
+</div>
+
+<!-- LOGIC: copied 1:1 from original file to preserve functionality -->
+<script>
+// DATA LAYER
+const TRAINS = {
+  '12951': {name:'Mumbai Rajdhani',  from:'NDLS', to:'MMCT', dep:'16:55', arr:'08:15', days:'Daily',  dur:'15h 20m'},
+  '12952': {name:'Mumbai Rajdhani',  from:'MMCT', to:'NDLS', dep:'17:00', arr:'08:35', days:'Daily',  dur:'15h 35m'},
+  '12301': {name:'Howrah Rajdhani',  from:'NDLS', to:'HWH',  dep:'16:55', arr:'10:05', days:'Daily',  dur:'17h 10m'},
+  '12302': {name:'Howrah Rajdhani',  from:'HWH',  to:'NDLS', dep:'14:05', arr:'10:00', days:'Daily',  dur:'19h 55m'},
+  '12621': {name:'Tamil Nadu Exp',   from:'NDLS', to:'MAS',  dep:'22:30', arr:'07:00', days:'Daily',  dur:'32h 30m'},
+  '22691': {name:'Rajdhani Express', from:'NDLS', to:'SBC',  dep:'20:00', arr:'11:45', days:'Daily',  dur:'39h 45m'},
+  '12627': {name:'Karnataka Express',from:'NDLS', to:'SBC',  dep:'22:15', arr:'05:45', days:'Daily',  dur:'31h 30m'},
+  '12049': {name:'Gatimaan Express', from:'NDLS', to:'AGC',  dep:'08:10', arr:'09:50', days:'Daily',  dur:'1h 40m'},
+  '12002': {name:'Bhopal Shatabdi',  from:'NDLS', to:'BPL',  dep:'06:00', arr:'13:45', days:'Daily',  dur:'7h 45m'},
+  '11077': {name:'Jhelum Express',   from:'NDLS', to:'PUNE', dep:'23:15', arr:'17:20', days:'Daily',  dur:'18h 5m'},
+};
+const PNR = {
+  '1234567890':{status:'CONFIRMED', train:'12951', cls:'3A',  seat:'B2/45',  date:'2025-04-15'},
+  '9876543210':{status:'RAC 12',    train:'12301', cls:'SL',  seat:'RAC/12', date:'2025-04-20'},
+  '5555555555':{status:'WL 5',      train:'12621', cls:'2A',  seat:'WL/5',   date:'2025-05-01'},
+  '1111111111':{status:'CONFIRMED', train:'22691', cls:'1A',  seat:'H1/3',   date:'2025-04-18'},
+};
+const STATIONS = {
+  'delhi':'NDLS','new delhi':'NDLS','ndls':'NDLS',
+  'mumbai':'MMCT','bombay':'MMCT','mmct':'MMCT',
+  'kolkata':'HWH','howrah':'HWH','hwh':'HWH',
+  'chennai':'MAS','madras':'MAS','mas':'MAS',
+  'bangalore':'SBC','bengaluru':'SBC','sbc':'SBC',
+  'pune':'PUNE','hyderabad':'SC','sc':'SC',
+  'ahmedabad':'ADI','adi':'ADI',
+  'jaipur':'JP','jp':'JP',
+  'lucknow':'LKO','lko':'LKO',
+  'varanasi':'BSB','bsb':'BSB',
+  'patna':'PNBE','pnbe':'PNBE',
+  'agra':'AGC','agc':'AGC',
+  'bhopal':'BPL','bpl':'BPL',
+};
+const STATION_NAMES = Object.fromEntries(
+  Object.entries(STATIONS).map(([k,v])=>[v,k.charAt(0).toUpperCase()+k.slice(1)])
+);
+const CLASSES = {
+  '1a':'1A - First AC','first ac':'1A','1ac':'1A',
+  '2a':'2A - Second AC','second ac':'2A','2ac':'2A',
+  '3a':'3A - Third AC','third ac':'3A','3ac':'3A',
+  'sl':'SL - Sleeper','sleeper':'SL',
+  'cc':'CC - Chair Car','chair car':'CC',
+  '2s':'2S - Second Sitting',
+  'general':'GN - General',
+};
+const DTMF_MAP = {
+  '1':'I want to book a train ticket',
+  '2':'Check my PNR status',
+  '3':'Show me the train schedule',
+  '4':'I want to cancel my ticket',
+  '5':'What is the ticket fare?',
+  '6':'Running status of my train',
+  '7':'Other services',
+  '8':'I have a complaint',
+  '9':'Thank you, goodbye',
+  '*':'Main menu',
+  '#':'Repeat',
+  '0':'Talk to an agent',
+};
+
+// NLU — Intent + Entity Detection
+const INTENTS = {
+  book_ticket:[/\bbook\b/,/\bbooking\b/,/\breserve\b/,/\breservation\b/,/\bticket\b/,/\btravel\b/,/\bseat\b/,/\bjourney\b/,/\btrain.*(book|reserve|get)\b/,/\b(want|need|like).*(ticket|travel|go)\b/],
+  pnr_status:[/\bpnr\b/,/\bstatus\b/,/\bcheck.*ticket\b/,/\bticket.*status\b/,/\bconfirm.*ticket\b/,/\bconfirmed\b/,/\braclist\b/,/\bwaitlist\b/,/\brac\b/,/\bwaiting\b/],
+  train_schedule:[/\bschedule\b/,/\btimetable\b/,/\btime table\b/,/\btiming\b/,/\barrival\b/,/\bdeparture\b/,/\bwhen.*train\b/,/\btrain.*time\b/,/\broute\b/,/\bstops\b/],
+  cancel_ticket:[/\bcance[l]+\b/,/\bcancellation\b/,/\brefund\b/,/\bcancel.*ticket\b/,/\bticket.*cancel\b/],
+  fare_enquiry:[/\bfare\b/,/\bprice\b/,/\bcost\b/,/\bcharge\b/,/\bhow much\b/,/\brate\b/,/\bfee\b/,/\bticket.*price\b/],
+  complaint:[/\bcomplaint\b/,/\bgrievance\b/,/\bproblem\b/,/\bissue\b/,/\bfeedback\b/],
+  train_running_status:[/\brunning.*status\b/,/\btrain.*late\b/,/\bdelay\b/,/\bon time\b/,/\blive.*status\b/,/\bwhere.*train\b/],
+  greeting:[/^(hi|hello|hey|namaste|namaskar|good\s*(morning|evening|afternoon))[\s!.]*$/,/\bhello\b/,/\bhi\b/,/\bnamaskar\b/],
+  exit:[/\b(bye|goodbye|exit|quit|done|thanks|thank you|dhanyawad|shukriya)\b/],
+};
+
+function detectIntent(text){
+  const t=text.toLowerCase().trim();
+  const scores={};
+  for(const[intent,pats] of Object.entries(INTENTS)){
+    let s=0;
+    pats.forEach(p=>{ if(p.test(t)) s++; });
+    if(s>0) scores[intent]=s/pats.length;
+  }
+  if(!Object.keys(scores).length) return ['unknown',0];
+  const best=Object.entries(scores).sort((a,b)=>b[1]-a[1])[0];
+  return [best[0], Math.min(0.3+best[1]*3,1)];
+}
+
+function extractEntities(text){
+  const t=text.toLowerCase();
+  const ents={};
+  // PNR
+  const pnrM=text.match(/\b(\d{10})\b/);
+  if(pnrM) ents.pnr=pnrM[1];
+  // Train number
+  const trainM=text.match(/\b(\d{4,5})\b/);
+  if(trainM&&!ents.pnr) ents.train_number=trainM[1];
+  // Date
+  const dateM=t.match(/\b(\d{1,2})[/-](\d{1,2})[/-](\d{2,4})\b/)
+           ||t.match(/\b(\d{1,2})\s+(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)\w*\b/)
+           ||t.match(/\b(today|tomorrow|this weekend|this week|next \w+)\b/);
+  if(dateM) ents.date=dateM[0];
+  // State-aware: if bot asked for date, treat any reply as date
+  if(!ents.date && sess.state==='book_date' && text.trim().length>0) ents.date=text.trim();
+  // Stations
+  const found=[];
+  for(const[city,code] of Object.entries(STATIONS)){
+    if(t.includes(city)) found.push({city:city.charAt(0).toUpperCase()+city.slice(1),code});
+  }
+  if(found.length>=2){ ents.origin=found[0].code; ents.origin_city=found[0].city; ents.destination=found[1].code; ents.destination_city=found[1].city; }
+  else if(found.length===1){
+    // State-aware: if waiting for origin, treat as origin; if waiting for destination, treat as destination
+    const curState=sess.state;
+    if(curState==='book_origin'){ ents.origin=found[0].code; ents.origin_city=found[0].city; }
+    else if(curState==='book_dest'){ ents.destination=found[0].code; ents.destination_city=found[0].city; }
+    else if(/\b(from|source|origin|starting|depart)\b/.test(t)){ ents.origin=found[0].code; ents.origin_city=found[0].city; }
+    else { ents.destination=found[0].code; ents.destination_city=found[0].city; }
+  }
+  // Class - state-aware: if bot asked for class, match broadly
+  for(const[k,v] of Object.entries(CLASSES)){ if(t.includes(k)){ ents.travel_class=v; break; } }
+  if(!ents.travel_class && sess.state==='book_class'){
+    if(/sl|sleeper/.test(t)) ents.travel_class='SL - Sleeper';
+    else if(/3a|3rd|third|3ac/.test(t)) ents.travel_class='3A - Third AC';
+    else if(/2a|2nd|second|2ac/.test(t)) ents.travel_class='2A - Second AC';
+    else if(/1a|1st|first|1ac/.test(t)) ents.travel_class='1A - First AC';
+    else if(/cc|chair/.test(t)) ents.travel_class='CC - Chair Car';
+    else if(text.trim().length>0) ents.travel_class=text.trim(); // fallback: treat as class
+  }
+  // Count
+  const cntM=t.match(/\b(\d+)\s*(passenger|person|people|traveller|adult)\b/);
+  if(cntM) ents.passenger_count=parseInt(cntM[1]);
+  return ents;
+}
+
+// DIALOGUE MANAGER
+let sess={state:'welcome',intent:null,entities:{},history:[]};
+
+function dialogue(text, intent, conf, ents){
+  const se=sess.entities;
+  Object.assign(se,ents);
+
+  // If mid-flow, override unknown/weak intent with the active session flow
+  const midFlow = sess.state !== 'welcome' && sess.state !== 'main_menu' && sess.state !== 'ended';
+  if(midFlow && (intent==='unknown' || conf < 0.4) && !['greeting','exit'].includes(intent)){
+    // Keep the flow going based on current state
+    if(sess.state.startsWith('book_')) intent = 'book_ticket';
+    else if(sess.state==='pnr_wait') intent = 'pnr_status';
+    else if(sess.state==='cancel_wait') intent = 'cancel_ticket';
+    else if(sess.state==='schedule_wait') intent = 'train_schedule';
+    else if(sess.state==='running_wait') intent = 'train_running_status';
+  }
+
+  if(sess.state==='welcome'||intent==='greeting'){
+    sess.state='main_menu';
+    return{msg:'Namaste! Welcome to IRCTC Customer Care. 🚂\n\nमैं आपकी कैसे सहायता कर सकता हूँ?\nHow can I help you today?',
+      opts:['Book Ticket','PNR Status','Train Schedule','Cancel Ticket','Fare Enquiry','Running Status']};
+  }
+  if(intent==='exit'){
+    sess.state='ended';
+    return{msg:'Thank you for contacting IRCTC! 🙏\nYatra shubh ho — have a safe journey!\n\nPress Reset to start a new session.',opts:['Start New Session']};
+  }
+
+  // BOOKING FLOW
+  if(intent==='book_ticket'||sess.state.startsWith('book_')){
+    sess.intent='book_ticket';
+    if(!se.origin){ sess.state='book_origin'; return{msg:'Sure! Let\'s book your ticket. 🎫\n\nWhich city are you departing from?',opts:['Delhi','Mumbai','Kolkata','Chennai','Bangalore','Hyderabad','Pune','Jaipur']}; }
+    if(!se.destination){ sess.state='book_dest'; return{msg:`From <b>${se.origin_city||se.origin}</b>. ✅\n\nWhere would you like to travel to?`,opts:['Delhi','Mumbai','Kolkata','Chennai','Bangalore','Hyderabad','Pune','Agra']}; }
+    if(!se.date){ sess.state='book_date'; return{msg:`<b>${se.origin_city||se.origin}</b> → <b>${se.destination_city||se.destination}</b>\n\nWhat is your travel date? (e.g., 15 April or 20/04/2025)`,opts:['Today','Tomorrow','This Weekend','Next Monday']}; }
+    if(!se.travel_class){ sess.state='book_class'; return{msg:'Great! Which travel class do you prefer?',opts:['Sleeper (SL)','3rd AC (3A)','2nd AC (2A)','1st AC (1A)','Chair Car (CC)']}; }
+    // All collected
+    const origin=se.origin, dest=se.destination;
+    const matching=Object.entries(TRAINS).filter(([_,t])=>t.from===origin&&t.to===dest);
+    let msg;
+    if(matching.length){
+      const lines=matching.map(([n,t])=>`🚂 <b>${n}</b> - ${t.name}\n   Dep: ${t.dep} | Arr: ${t.arr} | Duration: ${t.dur} | ${t.days}`).join('\n\n');
+      msg=`Trains from <b>${se.origin_city||origin}</b> to <b>${se.destination_city||dest}</b> on ${se.date}:\n\n${lines}\n\nTo confirm booking, please visit IRCTC website or app.\n\n✅ This simulation is complete!`;
+    } else {
+      msg=`No direct trains found from ${origin} to ${dest}.\n\nTip: Try major station pairs like Delhi→Mumbai or Delhi→Bangalore.`;
+    }
+    sess.entities={};
+    sess.state='main_menu';
+    return{msg,opts:['Book Another Ticket','Check PNR Status','Main Menu']};
+  }
+
+  // PNR STATUS
+  if(intent==='pnr_status'||sess.state==='pnr_wait'){
+    sess.intent='pnr_status';
+    if(!se.pnr){ sess.state='pnr_wait'; return{msg:'Please share your 10-digit PNR number.\n\nExample: 1234567890',opts:[]}; }
+    const p=PNR[se.pnr];
+    let msg;
+    if(p){
+      const t=TRAINS[p.train]||{};
+      const statusIcon=p.status.includes('CONFIRMED')?'✅':p.status.includes('RAC')?'🟡':'🔴';
+      msg=`📋 <b>PNR Status: ${se.pnr}</b>\n\nTrain: ${p.train} - ${t.name||'—'}\nRoute: ${t.from||'?'} → ${t.to||'?'}\nDate: ${p.date}\nClass: ${p.cls} | Seat: ${p.seat}\nStatus: ${statusIcon} <b>${p.status}</b>`;
+    } else {
+      msg=`❌ PNR <b>${se.pnr}</b> not found.\n\nPlease check the number and try again. Sample PNRs: 1234567890, 9876543210`;
+    }
+    sess.entities={};
+    sess.state='main_menu';
+    return{msg,opts:['Check Another PNR','Book Ticket','Main Menu']};
+  }
+
+  // TRAIN SCHEDULE
+  if(intent==='train_schedule'){
+    sess.intent='train_schedule';
+    if(se.train_number&&TRAINS[se.train_number]){
+      const t=TRAINS[se.train_number];
+      const msg=`🚂 <b>Train ${se.train_number} — ${t.name}</b>\n\nFrom: ${t.from} → To: ${t.to}\nDeparture: ${t.dep} | Arrival: ${t.arr}\nDuration: ${t.dur}\nRuns: ${t.days}`;
+      sess.entities={};
+      sess.state='main_menu';
+      return{msg,opts:['Check Another Train','Book Ticket','Main Menu']};
+    }
+    if(se.origin&&se.destination){
+      const matching=Object.entries(TRAINS).filter(([_,t])=>t.from===se.origin&&t.to===se.destination);
+      let msg;
+      if(matching.length){
+        msg=`Trains from <b>${se.origin}</b> to <b>${se.destination}</b>:\n\n`+matching.map(([n,t])=>`🚂 <b>${n}</b> - ${t.name} | Dep: ${t.dep} | Arr: ${t.arr}`).join('\n');
+      } else {
+        msg=`No direct trains found between ${se.origin} and ${se.destination}.`;
+      }
+      sess.entities={};
+      sess.state='main_menu';
+      return{msg,opts:['Book a Train','Check PNR','Main Menu']};
+    }
+    sess.state='schedule_wait';
+    return{msg:'Please tell me the train number, or source and destination stations.',opts:['Delhi to Mumbai','Delhi to Kolkata','Delhi to Chennai','Delhi to Bangalore']};
+  }
+
+  // CANCEL
+  if(intent==='cancel_ticket'||sess.state==='cancel_wait'){
+    sess.intent='cancel_ticket';
+    if(!se.pnr){ sess.state='cancel_wait'; return{msg:'To cancel your ticket, please provide the 10-digit PNR number.',opts:[]}; }
+    const p=PNR[se.pnr];
+    const msg=p
+      ?`⚠️ <b>Cancellation Preview — PNR ${se.pnr}</b>\n\nTrain: ${p.train} | Class: ${p.cls} | Seat: ${p.seat}\nJourney Date: ${p.date}\n\nEstimated refund as per IRCTC cancellation policy.\n\n🔔 For actual cancellation, use IRCTC app/website.`
+      :`PNR ${se.pnr} not found. Please verify the number.`;
+    sess.entities={};
+    sess.state='main_menu';
+    return{msg,opts:['Check Another PNR','Book New Ticket','Main Menu']};
+  }
+
+  // FARE
+  if(intent==='fare_enquiry'){
+    const o=se.origin_city||se.origin||'Origin';
+    const d=se.destination_city||se.destination||'Destination';
+    const msg=`💰 <b>Approximate Fares — ${o} → ${d}</b>\n\n  General (GN): ₹50–₹150\n  Sleeper (SL): ₹200–₹600\n  Chair Car (CC): ₹300–₹900\n  3rd AC (3A): ₹500–₹1,500\n  2nd AC (2A): ₹800–₹2,500\n  1st AC (1A): ₹1,500–₹4,500\n\n*Actual fare depends on distance & availability.*`;
+    sess.state='main_menu';
+    return{msg,opts:['Book Ticket','Check PNR','Main Menu']};
+  }
+
+  // RUNNING STATUS
+  if(intent==='train_running_status'){
+    if(se.train_number){
+      const t=TRAINS[se.train_number];
+      if(t){
+        const msg=`📍 <b>Live Status — ${se.train_number} (${t.name})</b>\n\nStatus: ✅ Running On Time\nDeparted: ${t.from} at ${t.dep}\nExpected at ${t.to}: ${t.arr}\n\n🔔 For real-time tracking, use IRCTC Rail Connect app.`;
+        sess.entities={};
+        sess.state='main_menu';
+        return{msg,opts:['Check Another Train','Book Ticket','Main Menu']};
+      }
+    }
+    sess.state='running_wait';
+    return{msg:'Please provide the train number to check running status.',opts:['Train 12951','Train 12301','Train 12621']};
+  }
+
+  // COMPLAINT
+  if(intent==='complaint'){
+    const ref='CMP'+Math.random().toString(36).slice(2,8).toUpperCase();
+    sess.state='main_menu';
+    return{msg:`We're sorry to hear you're having an issue. 🙏\n\n<b>Complaint Reference: ${ref}</b>\n\nFor quick resolution:\n📞 Railway Helpline: 139\n📱 SMS: 139\n🌐 crc.indianrailways.gov.in\n💬 IRCTC App → Help & Support`,opts:['Book Ticket','PNR Status','Main Menu']};
+  }
+
+  // SCHEDULE WAIT (handle stations typed after prompt)
+  if(sess.state==='schedule_wait'&&(se.origin||se.destination||se.train_number)){
+    return dialogue(text,'train_schedule',conf,{});
+  }
+
+  // RUNNING WAIT
+  if(sess.state==='running_wait'&&se.train_number){
+    return dialogue(text,'train_running_status',conf,{});
+  }
+
+  // FALLBACK
+  sess.state='main_menu';
+  return{msg:"I didn't quite catch that. 🤔\n\nI can help with:\n• Ticket booking\n• PNR status\n• Train schedules\n• Cancellations\n• Fare enquiry\n• Running status\n\nWhat would you like to know?",
+    opts:['Book Ticket','PNR Status','Train Schedule','Cancel Ticket','Fare Enquiry']};
+}
+
+// SPEECH (STT + TTS)
+let recog=null, listening=false, ttsOn=false;
+
+function setupSTT(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){
+    document.getElementById('nomicnote').style.display='block';
+    document.getElementById('micbtn').disabled=true;
+    document.getElementById('micbtn').style.opacity='.4';
+    return;
+  }
+  recog=new SR();
+  recog.lang='en-IN'; recog.continuous=false; recog.interimResults=true;
+  recog.onstart=()=>{
+    listening=true;
+    document.getElementById('micbtn').classList.add('on');
+    document.getElementById('micbtn').textContent='⏹';
+    setVS('🔴 Listening… speak now');
+  };
+  recog.onresult=e=>{
+    let fi='',in_='';
+    for(let i=e.resultIndex;i<e.results.length;i++){
+      if(e.results[i].isFinal) fi+=e.results[i][0].transcript;
+      else in_+=e.results[i][0].transcript;
+    }
+    document.getElementById('inp').value=fi||in_;
+    if(fi) setVS(`✅ "${fi}" (${Math.round(e.results[0][0].confidence*100)}%)`);
+  };
+  recog.onerror=e=>{
+    listening=false;
+    resetMic();
+    setVS(`❌ ${e.error}`);
+  };
+  recog.onend=()=>{
+    listening=false;
+    resetMic();
+    const v=document.getElementById('inp').value.trim();
+    if(v){
+      setTimeout(()=>{send('voice');setVS('');},300);
+    } else {
+      setVS('');
+    }
+  };
+}
+
+function toggleMic(){
+  if(!recog)return;
+  if(listening){ recog.stop(); }
+  else {
+    document.getElementById('inp').value='';
+    try{recog.start();}catch(e){}
+  }
+}
+function resetMic(){
+  document.getElementById('micbtn').classList.remove('on');
+  document.getElementById('micbtn').textContent='🎤';
+}
+function setVS(m){ document.getElementById('vstatus').textContent=m; }
+
+function toggleTTS(){
+  ttsOn=!ttsOn;
+  document.getElementById('ttstog').classList.toggle('on',ttsOn);
+  document.getElementById('ttslbl').textContent='TTS: '+(ttsOn?'On 🔊':'Off');
+}
+function speak(text){
+  if(!ttsOn||!window.speechSynthesis)return;
+  window.speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text.replace(/<[^>]+>/g,'').replace(/[🚂🎫📋💰📍🙋👋✅❌⚠️💬🔔📍🟡🔴]/g,''));
+  u.lang='en-IN'; u.rate=0.92; u.pitch=1.05;
+  const vs=window.speechSynthesis.getVoices();
+  const pv=vs.find(v=>v.lang==='en-IN')||vs.find(v=>v.lang.startsWith('en'));
+  if(pv)u.voice=pv;
+  window.speechSynthesis.speak(u);
+}
+
+// UI HELPERS
+function addUserMsg(text){
+  const m=document.getElementById('msgs');
+  const d=document.createElement('div');
+  d.className='mrow user';
+  d.innerHTML=`<div class="mavatar usr">👤</div><div class="mcontent"><div class="mbubble">${esc(text)}</div></div>`;
+  m.appendChild(d); scrollMsgs();
+}
+
+function addBotMsg(text,opts,intent,conf,ents){
+  const m=document.getElementById('msgs');
+  const d=document.createElement('div');
+  d.className='mrow bot';
+
+  const cp=Math.round((conf||0)*100);
+  const cc=conf>.7?'#16a34a':conf>.4?'#f59e0b':'#ef4444';
+  const meta=intent&&intent!=='greeting'
+    ?`<div class="imeta"><span class="itag">🎯 ${intent}</span><div class="cbar"><div class="cfill" style="width:${cp}%;background:${cc}"></div></div><span style="font-family:var(--f-mono);font-size:9px;color:${cc}">${cp}%</span></div>`
+    :'';
+  const optsHtml=opts&&opts.length
+    ?`<div class="opts">${opts.map(o=>`<button class="ochip" onclick="q('${o.replace(/'/g,"\\'")}')"><span>${esc(o)}</span></button>`).join('')}</div>`
+    :'';
+
+  d.innerHTML=`<div class="mavatar bot">🤖</div><div class="mcontent"><div class="mbubble">${text.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<b>$1</b>')}</div>${meta}${optsHtml}</div>`;
+  m.appendChild(d); scrollMsgs();
+  if(intent) logTurn(intent,conf,ents);
+}
+
+function esc(t){ return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function scrollMsgs(){ setTimeout(()=>{ const m=document.getElementById('msgs'); m.scrollTop=m.scrollHeight; },50); }
+function showTyping(){ document.getElementById('typing').classList.add('show'); scrollMsgs(); }
+function hideTyping(){ document.getElementById('typing').classList.remove('show'); }
+
+// MAIN SEND
+function send(inputType='text'){
+  const el=document.getElementById('inp');
+  const text=el.value.trim();
+  if(!text) return;
+  el.value=''; setVS('');
+  addUserMsg(text);
+  showTyping();
+  document.getElementById('dIntent').textContent='detecting…';
+
+  setTimeout(()=>{
+    const [intent,conf]=detectIntent(text);
+    const ents=extractEntities(text);
+    const resp=dialogue(text,intent,conf,ents);
+    hideTyping();
+    addBotMsg(resp.msg,resp.opts,intent,conf,ents);
+    updateDebug(intent,conf,ents);
+    speak(resp.msg);
+    document.getElementById('statusTxt').textContent=`State: ${sess.state} · Turn ${sess.history.length}`;
+    if(sess.state==='ended') document.getElementById('statusTxt').textContent='Session ended · Click Reset';
+  }, 400+Math.random()*300);
+}
+
+function q(t){ document.getElementById('inp').value=t; send('quick'); }
+
+function dtmf(key){
+  const mapped=DTMF_MAP[key]||`Pressed ${key}`;
+  addUserMsg(`[DTMF: ${key}] — ${mapped}`);
+  document.getElementById('inp').value=mapped;
+  send('dtmf');
+}
+
+// DEBUG
+function updateDebug(intent,conf,ents){
+  document.getElementById('dState').textContent=sess.state;
+  document.getElementById('dIntent').textContent=intent||'—';
+  const cp=Math.round((conf||0)*100);
+  document.getElementById('dConfFill').style.width=cp+'%';
+  document.getElementById('dConfPct').textContent=cp+'%';
+  if(Object.keys(ents).length){ document.getElementById('dEnts').innerHTML=Object.entries(ents).map(([k,v])=>`<span class="epill">${k}: ${v}</span>`).join(' '); }
+  else { document.getElementById('dEnts').textContent='None'; }
+  const se=sess.entities;
+  if(Object.keys(se).length){ document.getElementById('dSessEnts').innerHTML=Object.entries(se).map(([k,v])=>`<span class="epill">${k}: ${v}</span>`).join(' '); }
+  else { document.getElementById('dSessEnts').textContent='None'; }
+}
+
+function logTurn(intent,conf,ents){
+  const log=document.getElementById('dLog');
+  const time=new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  const cp=Math.round((conf||0)*100);
+  const e=Object.keys(ents).length?Object.keys(ents).join(','):'—';
+  const el=document.createElement('div');
+  el.className='lentry';
+  el.innerHTML=`<span class="ltime">${time}</span><span class="lintent">${intent}</span><span>(${cp}%) e:[${e}]</span>`;
+  log.prepend(el);
+  if(log.children.length>20) log.removeChild(log.lastChild);
+}
+
+// CONTROLS
+function setMode(mode){
+  document.getElementById('tabConv').classList.toggle('on',mode==='conv');
+  document.getElementById('tabDTMF').classList.toggle('on',mode==='dtmf');
+  document.getElementById('convPanel').style.display=mode==='conv'?'block':'none';
+  document.getElementById('dtmfPanel').style.display=mode==='dtmf'?'block':'none';
+}
+
+function resetChat(){
+  sess={state:'welcome',intent:null,entities:{},history:[]};
+  document.getElementById('msgs').innerHTML='';
+  document.getElementById('dLog').innerHTML='';
+  document.getElementById('dState').textContent='welcome';
+  document.getElementById('dIntent').textContent='—';
+  document.getElementById('dConfFill').style.width='0%';
+  document.getElementById('dConfPct').textContent='0%';
+  document.getElementById('dEnts').textContent='None';
+  document.getElementById('dSessEnts').textContent='None';
+  document.getElementById('statusTxt').textContent='Ready · Frontend-only simulator';
+  init();
+}
+
+function exportChat(){
+  const rows=document.querySelectorAll('.mrow');
+  let txt=`IRCTC IVR Conversation Export\nSession: ${document.getElementById('dSess').textContent}\nDate: ${new Date().toLocaleString()}\n${'-'.repeat(60)}\n\n`;
+  rows.forEach(r=>{
+    const role=r.classList.contains('user')?'USER':'BOT ';
+    const b=r.querySelector('.mbubble');
+    if(b) txt+=`[${role}] ${b.innerText}\n\n`;
+  });
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([txt],{type:'text/plain'}));
+  a.download=`irctc_m3_session_${Date.now()}.txt`;
+  a.click();
+}
+
+document.addEventListener('keydown',e=>{ if(e.ctrlKey&&e.key==='m'){e.preventDefault();toggleMic();} });
+
+// INIT
+function init(){
+  const sid='SIM-'+Math.random().toString(36).slice(2,8).toUpperCase();
+  document.getElementById('dSess').textContent=sid;
+  setupSTT();
+  addBotMsg(
+    'Namaste! Welcome to IRCTC Customer Care. 🚂\n\nमैं आपकी कैसे सहायता कर सकता हूँ?\nHow can I help you today?',
+    ['Book Ticket','PNR Status','Train Schedule','Cancel Ticket','Fare Enquiry','Running Status'],
+    'greeting', 1.0, {}
+  );
+}
+init();
+</script>
+</body>
+</html>
