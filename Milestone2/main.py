@@ -1,5 +1,6 @@
 from pathlib import Path
 import sys
+from fastapi import FastAPI
 
 BASE_DIR = Path(__file__).resolve().parent
 if str(BASE_DIR) not in sys.path:
@@ -18,3 +19,10 @@ def home():
 if __name__ == "__main__":
     app.run()
 
+
+
+app = FastAPI()
+
+@app.get("/")
+def home():
+    return {"status": "working"}
